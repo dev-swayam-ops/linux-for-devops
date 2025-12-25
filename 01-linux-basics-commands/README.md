@@ -24,7 +24,7 @@ Lists files in long format with human-readable file sizes.
 
 ## ls -lr
 Lists files in reverse alphabetical order.
-[alt text](Screenshots/image-4.png) 
+![alt text](Screenshots/image-4.png) 
 ---
 
 ## ls -ltr
