@@ -1,1 +1,0 @@
-# system-info-and-hardware
