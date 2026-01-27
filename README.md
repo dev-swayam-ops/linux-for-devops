@@ -143,97 +143,109 @@ Follow this sequence to build comprehensive Linux knowledge:
 
 ### Foundational Modules (Start Here)
 
-1. **[01-linux-basics-commands](01-linux-basics-commands/)** (2-3 hours)
+1. **[01-linux-basics-commands](01-linux-basics-commands/)** (3-4 hours)
    - Essential Linux commands and shell navigation
    - File operations, text processing, and viewing
-   - Basic permission concepts
+   - Directory structure and permissions basics
 
-2. **[02-linux-advanced-commands](02-linux-advanced-commands/)** (2-3 hours)
+2. **[02-linux-advanced-commands](02-linux-advanced-commands/)** (4-5 hours)
    - Advanced file and text manipulation
-   - Process inspection and system information
-   - Package management fundamentals
+   - grep, sed, and text processing
+   - Process inspection and piping
 
-3. **[08-user-and-permission-management](08-user-and-permission-management/)** (2-3 hours)
+3. **[08-user-and-permission-management](08-user-and-permission-management/)** (3-4 hours)
    - User and group management
-   - File permissions and ownership
+   - File permissions (chmod, chown)
    - Sudo and privilege escalation
 
 ### Core Concepts (Build Here)
 
-4. **[07-process-management](07-process-management/)** (2-3 hours)
-   - Process lifecycle and signals
+4. **[07-process-management](07-process-management/)** (3-4 hours)
+   - Process lifecycle and signals (SIGTERM, SIGKILL)
    - Process monitoring and control
    - Background jobs and process prioritization
 
-5. **[05-memory-and-disk-management](05-memory-and-disk-management/)** (2-3 hours)
+5. **[05-memory-and-disk-management](05-memory-and-disk-management/)** (3-4 hours)
    - Memory allocation and usage
    - Disk partitioning and filesystems
    - Storage monitoring and optimization
 
-6. **[06-system-services-and-daemons](06-system-services-and-daemons/)** (2-3 hours)
+6. **[06-system-services-and-daemons](06-system-services-and-daemons/)** (3-4 hours)
    - systemd service management
    - Service units and targets
    - Enabling/disabling services at boot
 
-7. **[03-crontab-and-scheduling](03-crontab-and-scheduling/)** (1.5-2 hours)
+### Operational Topics
+
+7. **[03-crontab-and-scheduling](03-crontab-and-scheduling/)** (3-4 hours)
    - Job scheduling with cron
    - systemd timers
    - Automation fundamentals
 
-### Specialized Topics
-
-8. **[04-networking-and-ports](04-networking-and-ports/)** (2-3 hours)
+8. **[04-networking-and-ports](04-networking-and-ports/)** (4-5 hours)
    - Network interfaces and configuration
    - Port monitoring and firewalls
-   - Network diagnostics
+   - Network diagnostics and troubleshooting
 
-9. **[09-linux-config](09-linux-config/)** (2 hours)
-   - Configuration file formats
-   - System configuration management
-   - Configuration validation
+### System Administration
 
-10. **[10-archive-and-compression](10-archive-and-compression/)** (1.5 hours)
-    - Archiving with tar, zip
-    - Compression algorithms
-    - Backup strategies
+9. **[09-linux-config](09-linux-config/)** (2-3 hours)
+   - Configuration file formats and locations
+   - Editing and validating configurations
+   - Drop-in directories and overrides
+   - Safe configuration management
 
-### Advanced Topics
+10. **[10-archive-and-compression](10-archive-and-compression/)** (2-3 hours)
+    - Archiving with tar, zip, compression
+    - gzip, bzip2, xz compression methods
+    - Backup strategies and integrity verification
+    - Automated backup workflows
 
-11. **[11-linux-boot-process](11-linux-boot-process/)** (2-2.5 hours) ← *Currently Here*
-    - Boot sequence and firmware
-    - Bootloader configuration (GRUB)
-    - Kernel initialization
-    - systemd boot process
+11. **[11-linux-boot-process](11-linux-boot-process/)** (2-3 hours)
+    - Linux boot sequence (BIOS/UEFI, GRUB, kernel, systemd)
+    - Boot message analysis and systemd-analyze
+    - Kernel parameters and initramfs
+    - Boot performance monitoring
 
 12. **[12-security-and-firewall](12-security-and-firewall/)** (2-3 hours)
-    - Linux security hardening
-    - Firewall rules and policies
-    - SELinux and AppArmor basics
+    - Firewall configuration with UFW and iptables
+    - Network security fundamentals
+    - SSH hardening and key-based authentication
+    - Intrusion detection with fail2ban
+
+### Maintenance and Operations
 
 13. **[13-logging-and-monitoring](13-logging-and-monitoring/)** (2-3 hours)
-    - Log files and journalctl
-    - System monitoring
-    - Log analysis and searching
+    - systemd journal and log queries
+    - System metrics and performance monitoring
+    - Log analysis and troubleshooting
+    - Log rotation and disk management
 
-14. **[14-package-management](14-package-management/)** (1.5-2 hours)
-    - Package managers (apt, yum)
-    - Dependency management
-    - Repository configuration
+14. **[14-package-management](14-package-management/)** (2-2.5 hours)
+    - Package managers (apt, yum, dnf)
+    - Installing, updating, removing packages
+    - Dependency management and repositories
+    - Automated package workflows
 
 15. **[15-storage-and-filesystems](15-storage-and-filesystems/)** (2-3 hours)
-    - Filesystem types and features
-    - LVM and volume management
-    - Storage administration
+    - Filesystem types (ext4, xfs, btrfs) and features
+    - Disk partitioning and LVM (Logical Volume Manager)
+    - Storage administration and disk quotas
+    - Filesystem health and performance monitoring
 
 16. **[16-shell-scripting-basics](16-shell-scripting-basics/)** (3-4 hours)
-    - Bash fundamentals
-    - Variables, conditionals, loops
-    - Functions and script best practices
+    - Bash script structure and execution
+    - Variables, command substitution, and quoting
+    - Conditionals (if/else) and loops (for/while)
+    - Functions, error handling, and debugging
+    - Practical script examples and best practices
 
-17. **[17-troubleshooting-and-scenarios](17-troubleshooting-and-scenarios/)** (Variable)
-    - Real-world scenarios
-    - Debugging strategies
-    - Common issues and solutions
+17. **[17-troubleshooting-and-scenarios](17-troubleshooting-and-scenarios/)** (4-5 hours)
+    - Systematic troubleshooting methodology
+    - Log analysis and error diagnosis
+    - Service, network, and performance troubleshooting
+    - Real-world scenarios and hands-on labs
+    - Root cause analysis and resolution strategies
 
 ---
 
@@ -311,101 +323,6 @@ MODULE-NAME/
 
 ---
 
-## Getting Started
-
-### System Requirements
-
-**Recommended Environment:**
-- **VM or dual-boot system** - Never experiment on production servers
-- **Linux distribution** - Ubuntu 20.04 LTS, 22.04 LTS, or CentOS 8+ (all labs tested)
-- **Disk space** - Minimum 20 GB for comfortable labs and VMs
-- **Memory** - 2 GB minimum, 4 GB recommended for running VMs
-- **Terminal/SSH** - For remote access to Linux systems
-
-**Supported Distributions:**
-- ✓ Ubuntu / Debian (primary focus)
-- ✓ CentOS / RHEL (equivalent commands provided)
-- ✓ Other RPM/APT-based distributions
-- ⚠ Alpine, Arch (concepts still apply, some tools differ)
-
-### Quick Start
-
-1. **Set up a test environment:**
-   ```bash
-   # Option A: Virtual machine (VirtualBox, VMware, KVM)
-   # Download Ubuntu 20.04 LTS ISO
-   # Create 20GB VM with 2GB RAM
-   
-   # Option B: Cloud instance (AWS, DigitalOcean, Azure, GCP)
-   # Launch Ubuntu instance ($5-10/month for learning)
-   
-   # Option C: WSL2 on Windows
-   # Enable WSL2 and install Ubuntu
-   ```
-
-2. **Clone this repository:**
-   ```bash
-   git clone https://github.com/yourusername/linux-for-devops.git
-   cd linux-for-devops
-   ```
-
-3. **Start with Module 01:**
-   ```bash
-   cd 01-linux-basics-commands
-   cat README.md           # Read overview
-   cat 01-theory.md        # Learn concepts
-   cat 02-commands-cheatsheet.md  # Reference commands
-   cat 03-hands-on-labs.md # Execute labs
-   ```
-
-4. **Make scripts executable and run:**
-   ```bash
-   cd scripts
-   chmod +x *.sh
-   ./some-script.sh --help
-   ```
-
----
-
-## Recommended Tools & Environment
-
-### Linux Distribution (for labs)
-
-- **Ubuntu 20.04 LTS** or **22.04 LTS** (primary testing platform)
-  - Long-term support
-  - Widely used in DevOps
-  - Excellent documentation
-
-### Virtualization
-
-**For local testing:**
-- VirtualBox (free, cross-platform)
-- KVM (Linux native, good performance)
-- VMware Player (free version)
-
-**For cloud learning:**
-- AWS EC2 t2.micro (free tier, 1 year)
-- DigitalOcean ($5/month droplet)
-- Google Cloud (free tier available)
-- Azure (free trial available)
-
-### Terminal & SSH Tools
-
-- **SSH client** (built-in on Linux/Mac, PuTTY on Windows)
-- **tmux** or **screen** (for session management)
-- **Vim/Nano** (text editors)
-- **htop** (enhanced process monitoring)
-- **bat** (syntax-highlighted cat)
-
-### Optional Enhancements
-
-- **Oh-My-Zsh** (shell enhancement)
-- **fzf** (fuzzy finder)
-- **ripgrep** (fast grep)
-- **Shellcheck** (bash script linter)
-
----
-
 ## Learning Best Practices
 
 ### 1. Don't Just Read — Execute
@@ -437,14 +354,6 @@ Write down:
 
 Create your own command reference as you learn. This reinforces memory and becomes useful reference material.
 
-### 6. Engage with the Linux Community
-
-- Ask questions on Stack Overflow, Reddit r/linux
-- Read Linux documentation (man pages, info)
-- Follow Linux blogs and podcasts
-- Contribute improvements to this repository
-
----
 
 ## Common Questions
 
@@ -488,100 +397,5 @@ Create your own command reference as you learn. This reinforces memory and becom
 
 ---
 
-## Contributing
 
-This repository is designed to be community-driven. Contributions welcome:
-
-- **Report errors** - Found a typo, broken command, or unclear explanation?
-- **Suggest improvements** - Better examples, clearer explanations?
-- **Add content** - Want to write additional modules?
-- **Fix labs** - Found a lab that doesn't work?
-
-### How to Contribute
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b improve/module-name`
-3. Make changes with clear commit messages
-4. Test on your system
-5. Submit a pull request with description
-
----
-
-## Module Completion Status
-
-| Module | Status | Last Updated |
-|--------|--------|--------------|
-| 01-linux-basics-commands | ✓ Complete | 2024-01 |
-| 02-linux-advanced-commands | ✓ Complete | 2024-01 |
-| 03-crontab-and-scheduling | ✓ Complete | 2024-01 |
-| 04-networking-and-ports | ✓ Complete | 2024-01 |
-| 05-memory-and-disk-management | ✓ Complete | 2024-01 |
-| 06-system-services-and-daemons | ✓ Complete | 2024-01 |
-| 07-process-management | ✓ Complete | 2024-01 |
-| 08-user-and-permission-management | ✓ Complete | 2024-01 |
-| 09-linux-config | ✓ Complete | 2024-01 |
-| 10-archive-and-compression | ✓ Complete | 2024-01 |
-| 11-linux-boot-process | ✓ Complete | 2025-01 |
-| 12-security-and-firewall | 🔄 In Progress | - |
-| 13-logging-and-monitoring | ⏳ Planned | - |
-| 14-package-management | ⏳ Planned | - |
-| 15-storage-and-filesystems | ⏳ Planned | - |
-| 16-shell-scripting-basics | ⏳ Planned | - |
-| 17-troubleshooting-and-scenarios | ⏳ Planned | - |
-
----
-
-## Credits & Acknowledgments
-
-- **Linux Community** - For creating and maintaining Linux
-- **Open Source Contributors** - Tools and utilities used throughout
-- **DevOps Community** - Real-world feedback and improvements
-
----
-
-## License
-
-This repository is licensed under the MIT License. See LICENSE file for details.
-
-**You are free to:**
-- Use for personal and commercial learning
-- Modify and adapt for your needs
-- Share and distribute with attribution
-
----
-
-## Support & Questions
-
-- **Found an error?** Open an issue on GitHub
-- **Have a question?** Check existing issues or start a discussion
-- **Want to improve?** Submit a pull request
-- **Need help with labs?** Check the troubleshooting section or ask in discussions
-
----
-
-## Further Reading
-
-### Official Documentation
-- [Linux Foundation](https://www.linuxfoundation.org/)
-- [GNU/Linux](https://www.gnu.org/)
-- [Ubuntu Documentation](https://help.ubuntu.com/)
-- [Red Hat Documentation](https://access.redhat.com/documentation/)
-
-### Books
-- *The Linux Command Line* by William Shotts
-- *Linux System Administration* by Tom Adelstein & Bill Lutz
-- *Advanced Linux Programming* by Mark Mitchell
-
-### Online Resources
-- [Linux man-pages](https://man7.org/linux/man-pages/)
-- [explainshell.com](https://explainshell.com/) - Explain shell commands
-- [Regex101](https://regex101.com/) - Regular expression testing
-
----
-
-**Last Updated:** January 2025
-
-**Maintained By:** DevOps Learning Community
-
-**Questions? Ideas? Improvements?** Star ⭐ this repo and contribute!
 

@@ -1,126 +1,147 @@
-# 11. Linux Boot Process
+# Module 11: Linux Boot Process
 
-## Overview
+## What You'll Learn
 
-The Linux boot process is the sequence of initialization steps that occurs from power-on until the system reaches a usable state. Understanding this process is critical for:
-
-- **Troubleshooting boot failures** - You can't fix what you don't understand
-- **System optimization** - Reducing boot time and optimizing startup services
-- **Security hardening** - Securing early boot stages and initial system setup
-- **Kernel debugging** - Understanding kernel parameters and boot options
-- **Container/VM management** - Controlling what services start at boot
-- **DevOps automation** - Managing infrastructure-as-code deployments
-
-In real-world scenarios, you'll encounter:
-- Systems that won't boot (kernel panic, missing filesystem, corrupted bootloader)
-- Slow boot times (too many services starting, resource contention)
-- Failed services at startup (permission issues, missing dependencies)
-- Need to modify kernel parameters for specific workloads
+- Understand the Linux boot sequence from BIOS to kernel
+- Navigate GRUB bootloader configuration
+- Analyze kernel initialization and logs
+- Recover from boot failures
+- Understand systemd boot process
+- Monitor boot performance
+- Work with boot parameters
 
 ## Prerequisites
 
-Before starting this module, you should understand:
+- Complete Module 1: Linux Basics Commands
+- Comfortable with command-line navigation
+- Understanding of files and permissions
+- Basic knowledge from Module 6 (systemd)
 
-- **Basic Linux commands**: `ls`, `cd`, `cat`, `grep`, `sudo`
-- **File permissions**: Read [08-user-and-permission-management](../08-user-and-permission-management/)
-- **Process management**: Read [07-process-management](../07-process-management/)
-- **System services**: Read [06-system-services-and-daemons](../06-system-services-and-daemons/)
-- **Filesystem basics**: Know mount points, `/etc`, `/boot`, `/var`, `/proc`, `/sys`
-- **Terminal navigation**: Comfortable with Linux command line
+## Key Concepts
 
-## Learning Objectives
+| Concept | Description |
+|---------|-------------|
+| **BIOS/UEFI** | Firmware that starts bootloader |
+| **GRUB** | Grand Unified Bootloader - loads kernel |
+| **Kernel** | Linux core that initializes hardware |
+| **initramfs** | Initial RAM filesystem for boot |
+| **systemd** | Init system that starts services after kernel |
+| **Boot Parameters** | Kernel arguments passed at boot |
+| **RunLevel** | System mode (single-user, multi-user) |
+| **Boot Order** | Priority of boot devices |
 
-After completing this module, you will be able to:
+## Hands-on Lab: Examine Boot Process
 
-- ✓ Describe the complete Linux boot sequence from BIOS/UEFI to login prompt
-- ✓ Explain the role of bootloaders (GRUB, LILO) and boot parameters
-- ✓ Understand kernel initialization and what happens during early boot
-- ✓ Interpret boot messages and logs using dmesg, journalctl, and boot logs
-- ✓ Modify kernel boot parameters and create custom boot configurations
-- ✓ Troubleshoot common boot failures and recover unbootable systems
-- ✓ Understand runlevels/targets and systemd boot sequence
-- ✓ Analyze and optimize boot time
-- ✓ Configure GRUB for multiboot and password protection
-- ✓ Access recovery/single-user mode when needed
+### Lab Objective
+Analyze boot logs and understand the boot sequence.
 
-## Module Roadmap
+### Commands
 
-1. **[01-theory.md](01-theory.md)** - Comprehensive explanation of boot stages
-   - BIOS/UEFI fundamentals
-   - Bootloader stage
-   - Kernel initialization
-   - systemd and init systems
-   - Boot targets/runlevels
+```bash
+# View boot messages
+dmesg | head -50
 
-2. **[02-commands-cheatsheet.md](02-commands-cheatsheet.md)** - Quick reference
-   - Boot-related commands
-   - Log inspection tools
-   - GRUB management
-   - Kernel parameter modification
-   - Boot analysis tools
+# Show last boot time
+last reboot | head -5
 
-3. **[03-hands-on-labs.md](03-hands-on-labs.md)** - Practical exercises
-   - Lab 1: Inspect current boot sequence
-   - Lab 2: View and analyze GRUB configuration
-   - Lab 3: Examine boot logs and dmesg output
-   - Lab 4: Modify kernel parameters
-   - Lab 5: Create custom boot menu entries
-   - Lab 6: Change default boot target
-   - Lab 7: Boot into single-user mode
-   - Lab 8: Analyze boot performance
-   - Lab 9: Create a recovery boot entry
-   - Lab 10: Configure GRUB password protection
+# View systemd boot analysis
+systemd-analyze
+# Shows: Startup finished in ...
 
-4. **[scripts/](scripts/)** - Practical automation tools
-   - `boot-analyzer.sh` - Analyze boot sequence and timing
-   - `grub-config-validator.sh` - Validate GRUB configuration
-   - `kernel-param-optimizer.sh` - Suggest kernel parameter optimizations
+# Detailed boot chart
+systemd-analyze plot > boot.svg
 
-## Quick Glossary
+# View GRUB configuration
+cat /boot/grub/grub.cfg | head -20
 
-| Term | Definition |
-|------|-----------|
-| **BIOS** | Basic Input/Output System; legacy firmware interface |
-| **UEFI** | Unified Extensible Firmware Interface; modern replacement for BIOS |
-| **Bootloader** | Program that loads the kernel into memory (GRUB, LILO) |
-| **Kernel** | Core of Linux OS; manages hardware and process execution |
-| **Initramfs** | Initial RAM filesystem containing essential drivers and tools |
-| **systemd** | Modern init system managing services and boot sequence |
-| **Runlevel** | Legacy concept for system state (0-6); replaced by targets in systemd |
-| **Target** | systemd concept replacing runlevels (e.g., multi-user.target) |
-| **Fsck** | Filesystem check utility run at boot to verify filesystem integrity |
-| **Boot parameter** | Configuration passed to kernel at boot time via bootloader |
-| **Kernel panic** | Fatal error condition when kernel cannot continue operation |
-| **POST** | Power-On Self-Test; first stage of BIOS initialization |
+# Show default boot entry
+grub-editenv list
 
-## Time Estimate
+# View kernel parameters used
+cat /proc/cmdline
 
-- Reading theory: 30-45 minutes
-- Hands-on labs: 60-90 minutes
-- Total time to complete: 2-2.5 hours
+# Check initramfs
+ls -lh /boot/initramfs*
 
-## Recommended Environment
+# View boot journal
+journalctl -b
+# -b = this boot
 
-- **VM or dual-boot system** (do not experiment on production servers)
-- **Linux distribution**: Ubuntu 20.04 LTS or CentOS 8+ (all labs tested on these)
-- **Disk space**: Minimum 20 GB for comfortable experimentation
-- **Memory**: Minimum 2 GB (4 GB recommended)
+# Show previous boots
+journalctl --list-boots
 
-## Safety Notes
+# Check boot messages
+journalctl -b -p err
+# Shows errors only
 
-⚠️ **Important**: Boot configuration changes can render a system unbootable.
+# View grub menu (edit on next boot)
+# Press 'e' during boot
 
-- **Always test on a VM first**
-- **Keep backups of GRUB configuration** (`/boot/grub/grub.cfg` on UEFI systems)
-- **Have a recovery method ready** (bootable USB, recovery partition)
-- **Don't experiment on production systems**
+# Get system boot time
+systemd-analyze time
+```
 
-## Success Criteria
+### Expected Output
 
-You'll know you've mastered this module when you can:
+```
+# systemd-analyze output:
+Startup finished in 2.345s (firmware) + 1.234s (loader) + 3.456s (kernel) + 5.789s (userspace) = 12.824s
 
-- Boot your system in different modes (normal, single-user, recovery)
-- Modify kernel parameters without breaking boot
-- Analyze boot failures from kernel logs
-- Reduce unnecessary services from boot sequence
-- Explain what happens at each stage of boot to another person
+# dmesg output:
+[    0.000000] Linux version 5.15.0-84-generic (build@ubuntu) ...
+[    0.000000] KERNEL supported cpus:
+[    0.000000] x86/fpu: Supporting XSAVE feature ...
+```
+
+## Validation
+
+Confirm successful completion:
+
+- [ ] Viewed kernel boot messages with dmesg
+- [ ] Analyzed systemd boot time
+- [ ] Identified default GRUB entry
+- [ ] Found kernel parameters
+- [ ] Reviewed boot journal
+- [ ] Understood boot sequence
+
+## Cleanup
+
+```bash
+# No cleanup needed - read-only operations
+# Boot logs are system information
+```
+
+## Common Mistakes
+
+| Mistake | Solution |
+|---------|----------|
+| Modifying GRUB config directly | Use grub-mkconfig, then update-grub |
+| Kernel panic at boot | Boot with single-user mode from GRUB |
+| Lost GRUB | Reinstall with live USB/recovery mode |
+| Unbootable after config | Keep backups of /boot and grub.cfg |
+| Forgetting to run update-grub | Changes to /etc/default/grub need update-grub |
+
+## Troubleshooting
+
+**Q: How do I access GRUB menu?**
+A: Hold Shift or ESC during boot. Edit with 'e', boot with Ctrl+X.
+
+**Q: System won't boot - what happened?**
+A: Check BIOS boot order, verify disk isn't corrupted, boot from live USB.
+
+**Q: How do I see kernel boot messages?**
+A: Use `dmesg` or `journalctl -b` to view kernel logs.
+
+**Q: What are kernel parameters?**
+A: Arguments passed to kernel at boot. View with `cat /proc/cmdline`.
+
+**Q: How do I boot into single-user mode?**
+A: Edit GRUB entry, add `single` to kernel line, press Ctrl+X.
+
+## Next Steps
+
+1. Complete all exercises in `exercises.md`
+2. Study GRUB configuration deep-dive
+3. Learn about initramfs customization
+4. Master boot failure recovery
+5. Explore systemd-boot (UEFI alternative)

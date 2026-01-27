@@ -1,402 +1,178 @@
-# System Services and Daemons
+# Module 6: System Services and Daemons
 
-**Learn how to manage, monitor, and troubleshoot Linux services and background processes using systemd.**
+## What You'll Learn
 
-## Why This Matters
-
-Every Linux system runs services—programs that start at boot and run continuously in the background. Understanding services is essential for:
-
-- **DevOps**: Deploy and manage applications reliably
-- **Sysadmins**: Keep systems running 24/7
-- **Troubleshooting**: Debug why services fail
-- **Automation**: Create reproducible deployments
-- **Monitoring**: Track service health
-
-### Real-World Scenarios
-
-**Scenario 1: Application Won't Start on Boot**
-You deploy a web application but it doesn't start after server reboot. You need to create a systemd service file to ensure it starts automatically.
-
-**Scenario 2: Service Keeps Crashing**
-Your database service crashes sporadically. You need to understand dependency ordering, restart policies, and how to debug failures.
-
-**Scenario 3: Port Conflicts**
-Two services want to listen on port 8080. You need to understand socket activation and how to manage service dependencies.
-
-**Scenario 4: Service Performance Issues**
-A background process uses too many resources. You need to limit resource consumption and set priorities.
-
-**Scenario 5: Audit Trail**
-Your company needs to know which services are running, when they started, and who made changes. You need service monitoring and audit capabilities.
-
----
+- Understand systemd service management
+- Start, stop, and restart services
+- Enable and disable services at boot
+- Check service status and logs
+- Create custom systemd service files
+- Troubleshoot service failures
 
 ## Prerequisites
 
-- **Module 01**: Linux Basics (file permissions, processes)
-- **Module 02**: Advanced Commands (grep, awk, find)
-- **Linux Distribution**: Ubuntu 20.04+ or Debian 10+ recommended
-- **Root/Sudo Access**: Required for service management
-- **Time**: 5-7 hours for complete module
+- Complete Module 1: Linux Basics Commands
+- Understanding of processes from Module 2
+- Basic file editing skills
+- Familiar with system administration concepts
 
----
+## Key Concepts
 
-## Learning Objectives
+| Concept | Description |
+|---------|-------------|
+| **Service/Daemon** | Background process running continuously |
+| **systemd** | Modern init system managing services |
+| **Unit File** | Configuration file for systemd service |
+| **Target** | Group of services run together (like runlevels) |
+| **Socket** | Network endpoint service listens on |
+| **Enabled** | Service starts automatically at boot |
+| **Active** | Service is currently running |
+| **Failed** | Service failed to start or crashed |
 
-### Service Management Basics (Beginner)
-1. Understand what daemons and services are
-2. Recognize the difference between systemd and other init systems
-3. Use basic systemd commands (start, stop, status)
-4. Check service status and logs
-5. Understand service enable/disable
+## Hands-on Lab: Manage System Services
 
-### Service Configuration (Beginner to Intermediate)
-6. Read and understand systemd service files
-7. Identify key service file directives
-8. Understand ExecStart, Type, Restart policies
-9. Recognize dependency directives
-10. Interpret service states (running, failed, inactive)
+### Lab Objective
+View, control, and monitor system services using systemd.
 
-### Advanced Service Management (Intermediate)
-11. Create custom systemd service files
-12. Set resource limits on services
-13. Configure socket activation
-14. Implement service dependencies
-15. Use service timers as alternatives to cron
-
-### Troubleshooting and Monitoring (Intermediate)
-16. Debug service startup failures
-17. Monitor service resource usage
-18. Analyze service logs with journalctl
-19. Understand service security contexts
-20. Create monitoring and alert systems
-
----
-
-## Module Roadmap
-
-```
-README.md (this file)
-├── 01-theory.md
-│   ├── What is a daemon?
-│   ├── History: init, upstart, systemd
-│   ├── Systemd architecture
-│   ├── Unit types and life cycle
-│   ├── Service dependencies
-│   └── Security contexts
-│
-├── 02-commands-cheatsheet.md
-│   ├── systemctl (service control)
-│   ├── systemd-analyze (performance)
-│   ├── journalctl (logging)
-│   ├── timedatectl, hostnamectl (system info)
-│   └── Common patterns
-│
-├── 03-hands-on-labs.md
-│   ├── Lab 1: Explore existing services
-│   ├── Lab 2: Understand systemd units
-│   ├── Lab 3: Create custom service
-│   ├── Lab 4: Service dependencies
-│   ├── Lab 5: Debug failed services
-│   ├── Lab 6: Resource limits
-│   ├── Lab 7: Socket activation
-│   └── Lab 8: Service timers
-│
-└── scripts/
-    ├── daemon-monitor.sh (real-time service monitoring)
-    ├── service-status-reporter.sh (comprehensive reporting)
-    └── README.md (script documentation)
-```
-
----
-
-## Quick Glossary
-
-| Term | Definition |
-|------|-----------|
-| **Daemon** | Background process running without controlling terminal |
-| **Service** | Daemon managed by systemd |
-| **Unit** | Configuration file for systemd resource (service, socket, timer, etc.) |
-| **Unit File** | Text file in /etc/systemd/system/ or /usr/lib/systemd/system/ |
-| **systemd** | Modern Linux init system managing services, mounts, timers |
-| **systemctl** | Command-line tool to manage systemd services |
-| **journalctl** | Tool to query systemd logs |
-| **PID** | Process ID (unique identifier for running process) |
-| **ExecStart** | Command that systemd runs to start the service |
-| **Type** | Service type (simple, forking, notify, idle, oneshot) |
-| **Restart** | Policy for automatic service restart (on-failure, always, no) |
-| **Dependency** | Requires, After, Wants (ordering and hard/soft dependencies) |
-| **Target** | Grouping of services (multi-user.target, graphical.target) |
-| **Socket** | Communication endpoint for inter-process communication |
-| **Timer** | Systemd's replacement for cron jobs |
-| **Enabled** | Service configured to start at boot |
-| **Active** | Service currently running |
-| **Failed** | Service attempted to start but encountered error |
-| **Security Context** | User, capabilities, and isolation for service |
-| **cgroup** | Control group limiting service resources |
-| **Unit Dependency** | Before, After, Requires, Wants between units |
-
----
-
-## Common Workflows
-
-### Workflow 1: Start/Stop a Service
+### Commands
 
 ```bash
-# Start a service immediately
-sudo systemctl start nginx
+# List all running services
+systemctl list-units --type=service
+
+# Check specific service status
+systemctl status ssh
+# or
+systemctl is-active ssh
+
+# Start a service
+sudo systemctl start ssh
 
 # Stop a service
-sudo systemctl stop nginx
+sudo systemctl stop ssh
 
-# Restart (stop then start)
-sudo systemctl restart nginx
+# Restart a service
+sudo systemctl restart ssh
 
-# Check current status
-sudo systemctl status nginx
+# Reload service (without stopping)
+sudo systemctl reload ssh
 
-# Check if enabled at boot
-sudo systemctl is-enabled nginx
-```
+# Enable service at boot
+sudo systemctl enable ssh
 
-### Workflow 2: Enable Service at Boot
+# Disable service at boot
+sudo systemctl disable ssh
 
-```bash
-# Enable service to start automatically
-sudo systemctl enable nginx
+# Check if enabled
+systemctl is-enabled ssh
 
-# Disable from auto-starting
-sudo systemctl disable nginx
+# List enabled services
+systemctl list-unit-files --type=service --state=enabled
 
-# Enable and start in one command
-sudo systemctl enable --now nginx
+# List failed services
+systemctl list-units --type=service --state=failed
 
-# Check what's enabled
-systemctl list-unit-files | grep enabled
-```
-
-### Workflow 3: Debug Service Failure
-
-```bash
-# Check service status with error details
-sudo systemctl status nginx
-
-# View recent logs
-sudo journalctl -u nginx -n 50  # Last 50 lines
+# View service logs
+journalctl -u ssh
+# Last 10 lines:
+journalctl -u ssh -n 10
 
 # Follow logs in real-time
-sudo journalctl -u nginx -f
+journalctl -u ssh -f
 
-# Check service configuration
-systemctl cat nginx
+# View service configuration
+cat /etc/systemd/system/ssh.service
+# or
+systemctl cat ssh
 
-# Verify service file syntax
-systemd-analyze verify /etc/systemd/system/myapp.service
-```
+# Check service dependencies
+systemctl show-dependencies ssh
 
-### Workflow 4: Create Custom Service
-
-```bash
-# Create service file
-sudo nano /etc/systemd/system/myapp.service
-
-# Add content (see 03-hands-on-labs.md Lab 3)
-
-# Reload systemd configuration
-sudo systemctl daemon-reload
-
-# Start and enable
-sudo systemctl enable --now myapp
-```
-
-### Workflow 5: Monitor Service Health
-
-```bash
-# Check service status
-sudo systemctl status myapp
-
-# View resource usage
-ps aux | grep myapp
-top -p $(pgrep -f myapp)
-
-# Check logs for errors
-sudo journalctl -u myapp --since "1 hour ago"
-```
-
----
-
-## Module Features
-
-### Practical Content
-- ✅ Real-world service management examples
-- ✅ Common troubleshooting scenarios
-- ✅ Best practices from production systems
-- ✅ Security-aware recommendations
-
-### Comprehensive Labs
-- ✅ 8 hands-on labs covering all topics
-- ✅ Safe test environments (custom services)
-- ✅ Complete setup and cleanup procedures
-- ✅ Verification checklists for each lab
-
-### Production Scripts
-- ✅ daemon-monitor.sh: Real-time service monitoring
-- ✅ service-status-reporter.sh: Comprehensive status reporting
-- ✅ Both production-quality with error handling
-
-### Tooling
-- ✅ 20+ essential systemd commands
-- ✅ 50+ real command examples
-- ✅ Quick reference patterns
-- ✅ Troubleshooting decision trees
-
----
-
-## Getting Started
-
-### Prerequisites Check
-
-```bash
-# Verify systemd is installed
-systemctl --version
-
-# Check current systemd version
-systemd --version
-
-# View available services
+# View all available services
 systemctl list-unit-files --type=service
 
-# Check system-wide service status
+# Reload systemd after config changes
+sudo systemctl daemon-reload
+
+# Check systemd status
 systemctl status
 ```
 
-### Recommended Learning Path
+### Expected Output
 
-1. **Start with Theory** (40 minutes)
-   - Understand daemon concepts
-   - Learn systemd architecture
-   - Read about unit types
+```
+# systemctl status ssh output:
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/etc/systemd/system/ssh.service; enabled; vendor preset: enabled)
+     Active: active (running) since Tue 2026-01-27 10:00:00 UTC; 2h 30min ago
+       Docs: man:sshd(8) man:sshd_config(5)
+     Process: 1234 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCESS)
+   Main PID: 1235 (sshd)
+      Tasks: 1 (limit: 2345)
+     Memory: 5.2M
+     CGroup: /system.slice/ssh.service
+             └─1235 /usr/sbin/sshd -D
 
-2. **Commands and Tools** (30 minutes)
-   - Learn essential systemctl commands
-   - Practice with existing services
-   - Get comfortable with journalctl
-
-3. **Hands-On Labs** (3-4 hours)
-   - Lab 1-2: Explore existing services
-   - Lab 3: Create custom service
-   - Lab 4-8: Advanced topics
-
-4. **Production Scripts** (30 minutes)
-   - Review monitoring scripts
-   - Adapt for your environment
-   - Deploy in test system
-
----
-
-## Success Criteria
-
-By completing this module, you'll be able to:
-
-- ✅ Explain what services and daemons are
-- ✅ List and manage services with systemctl
-- ✅ Create custom systemd service files
-- ✅ Debug failed services effectively
-- ✅ Monitor service health and performance
-- ✅ Implement service dependencies
-- ✅ Use timers as cron alternatives
-- ✅ Deploy automated monitoring solutions
-
----
-
-## Module Statistics
-
-| Metric | Value |
-|--------|-------|
-| Total Content | 6,000+ lines |
-| Theory Sections | 10+ |
-| Commands Documented | 20+ |
-| Hands-On Labs | 8 |
-| Scripts | 2 production tools |
-| Estimated Time | 5-7 hours |
-| Difficulty | Beginner to Intermediate |
-
----
-
-## Important Notes
-
-### Safety
-
-- Services run with elevated privileges by default
-- Creating/modifying services requires sudo
-- All labs use test services (safe)
-- No production system changes required
-- Always test in non-critical environment first
-
-### Distribution Notes
-
-- Primary focus: **Ubuntu 20.04+**, **Debian 10+**
-- RHEL/CentOS equivalents noted where relevant
-- systemd is standard on all modern distributions
-- Examples use apt/systemctl (same everywhere)
-
-### Best Practices Emphasized
-
-- Always test service files before deployment
-- Use descriptive service names
-- Document service purpose in comments
-- Set appropriate restart policies
-- Monitor service resource usage
-- Keep logs for audit trails
-- Use security contexts and limits
-
----
-
-## Troubleshooting This Module
-
-**Command not found?**
-- Verify systemd installed: `systemctl --version`
-- All commands standard on modern Linux
-- Run labs on Ubuntu 20.04+ or Debian 10+ for best results
-
-**Permission denied?**
-- Most systemctl operations need sudo
-- Use `sudo systemctl` for administrative commands
-- Some read-only commands work without sudo
-
-**Service won't start?**
-- Check logs: `sudo journalctl -u servicename -n 50`
-- Verify configuration: `systemd-analyze verify unit-file`
-- Run through Lab 5 (Debug Services) for detailed steps
-
----
-
-## Next Steps After This Module
-
-- **Module 07**: Process Management (advanced process control)
-- **Module 13**: Logging and Monitoring (centralized logging)
-- **Module 17**: Troubleshooting and Scenarios (complex problems)
-- **Module 14**: Package Management (installing services)
-
----
-
-## Quick Reference Commands
-
-```bash
-# Most Common Commands
-systemctl status nginx                    # Check status
-sudo systemctl start nginx                # Start service
-sudo systemctl stop nginx                 # Stop service
-sudo systemctl restart nginx              # Restart service
-sudo systemctl enable nginx               # Enable at boot
-sudo systemctl disable nginx              # Disable at boot
-sudo journalctl -u nginx -n 50 -f        # View logs
-systemctl list-units --type=service       # List all services
-systemctl cat nginx                       # Show configuration
-sudo systemctl daemon-reload              # Reload configs
+# journalctl -u ssh -n 5 output:
+Jan 27 10:00:00 hostname sshd[1235]: Server listening on 0.0.0.0 port 22.
+Jan 27 10:00:00 hostname sshd[1235]: Server listening on :: port 22.
+Jan 27 10:15:32 hostname sshd[4567]: Accepted password for user from 192.168.1.100 port 54321
 ```
 
----
+## Validation
 
-*System Services and Daemons: Comprehensive Learning Module*  
-*Master service management for reliable Linux deployments*
+Confirm successful completion:
+
+- [ ] Listed all running services with `systemctl list-units`
+- [ ] Checked service status with `systemctl status`
+- [ ] Started and stopped a service
+- [ ] Viewed service logs with `journalctl`
+- [ ] Enabled/disabled a service
+- [ ] Understood systemd unit file structure
+
+## Cleanup
+
+```bash
+# Re-enable SSH if you disabled it for testing
+sudo systemctl enable ssh
+sudo systemctl start ssh
+
+# Verify service is running
+systemctl status ssh
+```
+
+## Common Mistakes
+
+| Mistake | Solution |
+|---------|----------|
+| Forgot `sudo` for systemctl | Need privilege: use `sudo systemctl start service` |
+| Service won't start | Check logs: `journalctl -u servicename -n 20` |
+| `systemctl: command not found` | Old system, update to modern Linux |
+| Can't find service name | List all: `systemctl list-unit-files \| grep name` |
+| Restarted critical service, lost access | Use `systemctl status` to verify, then SSH won't reconnect |
+| Unit file not found | File must be in `/etc/systemd/system/` or `/usr/lib/systemd/system/` |
+
+## Troubleshooting
+
+**Q: How do I see why a service failed?**
+A: Use `journalctl -u servicename` to see detailed logs and errors.
+
+**Q: Why isn't my service starting at boot?**
+A: Check if enabled: `systemctl is-enabled servicename`. Enable with `systemctl enable`.
+
+**Q: Can I see all services on system?**
+A: Use `systemctl list-unit-files --type=service` to see all, enabled/disabled.
+
+**Q: What's the difference between start and enable?**
+A: `start` = run now, `enable` = run at next boot. Use both for permanent activation.
+
+**Q: How do I create a custom service?**
+A: Create `/etc/systemd/system/myservice.service`, then `systemctl daemon-reload` and `systemctl enable myservice`.
+
+## Next Steps
+
+1. Complete all exercises in `exercises.md`
+2. Practice managing common services (SSH, Apache, MySQL)
+3. Create custom systemd service files
+4. Learn to troubleshoot service failures
+5. Explore systemd timers and other unit types
